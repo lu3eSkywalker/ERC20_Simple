@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 
-const BurnTokens = () => {
+const BurnFrom = () => {
+  const [ethAddress, setEthAddress] = useState<string>("");
   const [tokenAmt, setTokenAmt] = useState<string>("");
   const [hash, setHash] = useState<string>("");
 
@@ -9,24 +10,32 @@ const BurnTokens = () => {
   const PRIVATE_KEY = process.env.NEXT_PUBLIC_PRIVATE_KEY;
   const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
-  const ABI = ["function burn(uint256) public returns (bool success)"];
+  const ABI = [
+    "function burnFrom(address, uint256) public returns (bool success)",
+  ];
 
   const provider = new ethers.JsonRpcProvider(RPC_URL);
   const wallet = new ethers.Wallet(PRIVATE_KEY || "", provider);
 
   const contract = new ethers.Contract(CONTRACT_ADDRESS || "", ABI, wallet);
 
-  async function burnTokens() {
+  async function burnFrom() {
     const tokenAmount = ethers.parseUnits(tokenAmt, 1);
-    const burnTokens = await contract.burn(tokenAmount);
-    // console.log(burnTokens);
-    console.log("Hash: ", burnTokens.hash);
-    setHash(burnTokens.hash);
+    const burnTokens = await contract.burnFrom(ethAddress, tokenAmount);
+    console.log(burnTokens);
   }
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-8 w-80">
+
+        <input
+          type="text"
+          placeholder="Eth Address"
+          onChange={(e) => setEthAddress(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
         <input
           type="text"
           placeholder="Token Amt"
@@ -48,7 +57,7 @@ const BurnTokens = () => {
 
         <button
           className="mt-6 w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition"
-          onClick={() => burnTokens()}
+          onClick={() => burnFrom()}
         >
           Burn Tokens
         </button>
@@ -57,4 +66,4 @@ const BurnTokens = () => {
   );
 };
 
-export default BurnTokens;
+export default BurnFrom;

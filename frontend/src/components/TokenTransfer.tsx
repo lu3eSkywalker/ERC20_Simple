@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import { BigNumberish } from "ethers";
 
 const TokenTransfer = () => {
   const [toSendToAddress, setToSendToAddress] = useState<string>("");
@@ -21,12 +20,12 @@ const TokenTransfer = () => {
   const contract = new ethers.Contract(CONTRACT_ADDRESS || "", ABI, wallet);
 
   async function tokenTransfer() {
-    const tokenAmount = ethers.parseUnits(ethToSend, 1); // If your token has different decimals, adjust the 18
+    const tokenAmount = ethers.parseUnits(ethToSend, 1);
     const transferToken = await contract.transfer(
       toSendToAddress,
       tokenAmount,
       {
-        gasLimit: 10000000, // Set the gas limit as a number directly
+        gasLimit: 10000000, 
       }
     );
 
